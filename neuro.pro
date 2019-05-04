@@ -26,8 +26,7 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp \
-    narray.cpp
+        mainwindow.cpp
 
 HEADERS += \
         mainwindow.h \
