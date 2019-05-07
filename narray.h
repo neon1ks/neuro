@@ -186,6 +186,8 @@ NType* NArray<NType>::getData() {
 	return this->m_data;
 }
 
+// Метод resize не может уменьшить размер массива удалив данные.
+// Влияет только на два параметра m_data и m_size
 template <typename NType>
 void NArray<NType>::resize(int size) {
 	size = size > m_lenght ? size : m_lenght;
