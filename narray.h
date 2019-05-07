@@ -24,10 +24,10 @@ class NArray {
 	void push(NType element);
 	NType pop();
 
-	void set(NType element, int pos);
-	NType get(int pos);
+	void set(NType element, int pos);  ///< Установка значения одному элементу (OK)
+	NType get(int pos);                ///< Получение значения одного элемента (OK)
 
-	void setBlock(int block);
+	void setBlock(int block);  ///< Изменение шага изменения размера данных (OK)
 
 	int getSize();     ///< Получение размера данных (OK)
 	int getLenght();   ///< Получение длины данных (OK)
@@ -161,7 +161,9 @@ NType NArray<NType>::get(int pos) {
 
 template <typename NType>
 void NArray<NType>::setBlock(int block) {
-	m_block = block;
+	if (block > 0) {
+		m_block = block;
+	}
 }
 
 template <typename NType>
