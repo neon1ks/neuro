@@ -146,7 +146,12 @@ NType NArray<NType>::pop() {
 
 template <typename NType>
 void NArray<NType>::set(NType element, int pos) {
-	m_data[pos] = element;
+	if (m_size > pos) {
+		m_data[pos] = element;
+		if (m_lenght <= pos) {
+			m_lenght = pos + 1;
+		}
+	}
 }
 
 template <typename NType>
