@@ -4,9 +4,9 @@
 template <typename NType>
 class NArray {
    public:
-	NArray();
-	NArray(NArray<NType>& obj);  ///< Конструктор копирования
-	NArray<NType>& operator=(const NArray<NType>& obj);
+	NArray();                                            ///< Конструктор по умолчанию (OK)
+	NArray(NArray<NType>& obj);                          ///< Конструктор копирования
+	NArray<NType>& operator=(const NArray<NType>& obj);  ///< Оператор копирования
 	explicit NArray(int size);
 	~NArray();
 
@@ -29,12 +29,12 @@ class NArray {
 
 	void setBlock(int block);
 
-	int getSize();
-	int getLenght();
-	int getBlock();
+	int getSize();     ///< Получение размера данных (OK)
+	int getLenght();   ///< Получение длины данных (OK)
+	int getBlock();    ///< Получение шага изменения размера данных (OK)
+	NType* getData();  ///< Получение указателя на данные (OK)
 
 	void resize(int size);
-	NType* getData();
 };
 
 template <typename NType>
