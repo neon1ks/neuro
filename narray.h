@@ -17,7 +17,7 @@ class NArray {
 	NType* m_data;  ///< Указатель на хранящиеся данные
 
    public:
-	void init(int lenght, NType& value);
+	void init(int lenght, const NType& value);  ///< Инициализация массива значением (OK)
 	void add(NType element, int pos);
 	NType del(int pos);
 
@@ -34,7 +34,7 @@ class NArray {
 	int getBlock();    ///< Получение шага изменения размера данных (OK)
 	NType* getData();  ///< Получение указателя на данные (OK)
 
-	void resize(int size);
+	void resize(int size);  ///< Изменение размера доступной памяти (OK)
 };
 
 template <typename NType>
@@ -96,7 +96,7 @@ NArray<NType>::~NArray() {
 }
 
 template <typename NType>
-void NArray<NType>::init(int lenght, NType& value) {
+void NArray<NType>::init(int lenght, const NType& value) {
 	if (lenght > m_size) {
 		resize(lenght);
 	}
