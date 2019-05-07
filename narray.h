@@ -180,6 +180,11 @@ int NArray<NType>::getBlock() {
 }
 
 template <typename NType>
+NType* NArray<NType>::getData() {
+	return this->m_data;
+}
+
+template <typename NType>
 void NArray<NType>::resize(int size) {
 	size = size > m_lenght ? size : m_lenght;
 	if (m_data == nullptr) {
@@ -193,11 +198,6 @@ void NArray<NType>::resize(int size) {
 		}
 		delete[] p;
 	}
-}
-
-template <typename NType>
-NType* NArray<NType>::getData() {
-	return this->m_data;
 }
 
 #endif  // NARRAY_H
