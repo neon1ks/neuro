@@ -191,6 +191,7 @@ void NArray<NType>::resize(int size) {
 	size = size > m_lenght ? size : m_lenght;
 	if (m_data == nullptr) {
 		m_data = new NType[size];
+		m_size = size;
 	} else if (m_size != size) {
 		auto p = m_data;
 		m_data = new NType[size];
