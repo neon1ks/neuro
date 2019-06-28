@@ -18,7 +18,7 @@ class NArray {
 
    public:
 	void init(int lenght, const NType& value);  ///< Инициализация массива значением (OK)
-	void add(NType element, int pos);
+	void add(NType element, int pos);           ///< Добавление элемента в массив, существующие сдвигаются
 	NType del(int pos);
 
 	void push(NType element);
