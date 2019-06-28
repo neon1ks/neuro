@@ -30,7 +30,8 @@ SOURCES += \
 
 HEADERS += \
         mainwindow.h \
-    narray.h
+    narray.h \
+    nmatrix.h
 
 FORMS += \
         mainwindow.ui
