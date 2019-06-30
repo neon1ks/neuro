@@ -16,11 +16,12 @@ class NMatrix {
 	NType* m_data;  ///< Указатель на хранящиеся данные
 
    public:
-	void init(int len_row, int len_column, const NType& value);
-	void addRow(int pos_row, const NType& value);
-	void delRow(int pos_row);
-	void addColumn(int pos_column, const NType& value);
-	void delColumn(int pos_column);
+	void init(int len_row, int len_column, const NType& value);  ///< Инициализация матрицы значением (OK)
+
+	void addRow(int pos_row, const NType& value);        ///< Добавление строки в матрицу, существующие сдвигаются (OK)
+	void delRow(int pos_row);                            ///< Удаление строки из матрицу, существующие сдвигаются (OK)
+	void addColumn(int pos_column, const NType& value);  ///< Добавление строки в матрицу, существующие сдвигаются (OK)
+	void delColumn(int pos_column);                      ///< Удаление сстолбца из матрицу, существующие сдвигаются (OK)
 
 	void set(const NType& value, int pos_row, int pos_column);  ///< Установка значения одному элементу (OK)
 	NType get(int pos_row, int pos_column);                     ///< Получение значения одного элемента (OK)
@@ -100,7 +101,7 @@ void NMatrix<NType>::init(int len_row, int len_column, const NType& value) {
 template <typename NType>
 void NMatrix<NType>::addRow(int pos_row, const NType& value) {
 	if (pos_row >= m_size_row) {
-		resize(m_size_row + 1, m_size_column);
+		resize(pos_row + 1, m_size_column);
 	}
 
 	if (pos_row < m_len_row) {
@@ -114,9 +115,9 @@ void NMatrix<NType>::addRow(int pos_row, const NType& value) {
 		}
 		++m_len_row;
 	} else {
-		for (int i = m_len_row; i < pos_row; ++i) {
+		for (int i = m_len_row; i < pos_row + 1; ++i) {
 			for (int j = 0; j < m_len_column; ++j) {
-				m_data[(i + 1) * m_size_column + j] = value;
+				m_data[i * m_size_column + j] = value;
 			}
 		}
 		m_len_row = pos_row + 1;
@@ -125,6 +126,9 @@ void NMatrix<NType>::addRow(int pos_row, const NType& value) {
 
 template <typename NType>
 void NMatrix<NType>::delRow(int pos_row) {
+	if (pos_row >= m_len_row) {
+		return;
+	}
 	--m_len_row;
 	for (int i = pos_row; i < m_len_row; ++i) {
 		for (int j = 0; j < m_len_column; ++j) {
@@ -136,7 +140,7 @@ void NMatrix<NType>::delRow(int pos_row) {
 template <typename NType>
 void NMatrix<NType>::addColumn(int pos_column, const NType& value) {
 	if (pos_column >= m_size_column) {
-		resize(m_size_row, m_size_column + 1);
+		resize(m_size_row, pos_column + 1);
 	}
 
 	if (pos_column < m_len_column) {
@@ -151,8 +155,8 @@ void NMatrix<NType>::addColumn(int pos_column, const NType& value) {
 		++m_len_column;
 	} else {
 		for (int i = 0; i < m_len_row; ++i) {
-			for (int j = m_len_column; j < pos_column; ++j) {
-				m_data[i * m_size_column + j + 1] = value;
+			for (int j = m_len_column; j < pos_column + 1; ++j) {
+				m_data[i * m_size_column + j] = value;
 			}
 		}
 		m_len_column = pos_column + 1;
@@ -161,6 +165,9 @@ void NMatrix<NType>::addColumn(int pos_column, const NType& value) {
 
 template <typename NType>
 void NMatrix<NType>::delColumn(int pos_column) {
+	if (pos_column >= m_len_column) {
+		return;
+	}
 	--m_len_column;
 	for (int i = 0; i < m_len_row; ++i) {
 		for (int j = pos_column; j < m_len_column; ++j) {
