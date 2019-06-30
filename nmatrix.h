@@ -24,14 +24,13 @@ class NMatrix {
 	void set(const NType& value, int pos_row, int pos_column);
 	NType get(int pos_row, int pos_column);
 
-	NType* getData();
+	int getSizeRow() const;
+	int getSizeColumn() const;
+	int getLenRow() const;
+	int getLenColumn() const;
+	NType* getData() const;
 
 	void resize(int size_row, int size_column);
-
-	int getSizeRow();
-	int getSizeColumn();
-	int getLenRow();
-	int getLenColumn();
 };
 
 template <typename NType>
@@ -81,11 +80,13 @@ void NMatrix<NType>::init(int len_row, int len_column, const NType& value) {
 		}
 	}
 
-	for (int i = 0; i < m_len_row; ++i) {
-		for (int j = 0; j < m_len_column; ++j) {
+	for (int i = 0; i < len_row; ++i) {
+		for (int j = 0; j < len_column; ++j) {
 			m_data[i * m_size_column + j] = value;
 		}
 	}
+	m_len_row = len_row;
+	m_len_column = len_column;
 }
 
 template <typename NType>
@@ -174,34 +175,34 @@ NType NMatrix<NType>::get(int pos_row, int pos_column) {
 }
 
 template <typename NType>
-int NMatrix<NType>::getSizeRow() {
+int NMatrix<NType>::getSizeRow() const {
 	return m_size_row;
 }
 
 template <typename NType>
-int NMatrix<NType>::getSizeColumn() {
+int NMatrix<NType>::getSizeColumn() const {
 	return m_size_column;
 }
 
 template <typename NType>
-int NMatrix<NType>::getLenRow() {
+int NMatrix<NType>::getLenRow() const {
 	return m_len_row;
 }
 
 template <typename NType>
-int NMatrix<NType>::getLenColumn() {
+int NMatrix<NType>::getLenColumn() const {
 	return m_len_column;
 }
 
 template <typename NType>
-NType* NMatrix<NType>::getData() {
+NType* NMatrix<NType>::getData() const {
 	return m_data;
 }
 
 template <typename NType>
 void NMatrix<NType>::resize(int size_row, int size_column) {
-	size_row = size_row > m_len_row ? size_row : m_len_row;
-	size_column = size_column > m_len_column ? size_column : m_len_column;
+	size_row = size_row > m_size_row ? size_row : m_size_row;
+	size_column = size_column > m_size_column ? size_column : m_size_column;
 	if (m_data == nullptr) {
 		m_data = new NType[size_column * size_row];
 		m_size_row = size_row;
