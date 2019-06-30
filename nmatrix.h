@@ -1,4 +1,4 @@
-﻿#ifndef NMATRIX_H
+#ifndef NMATRIX_H
 #define NMATRIX_H
 
 template <typename NType>
