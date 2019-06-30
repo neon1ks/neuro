@@ -93,6 +93,9 @@ NArray<NType>::NArray(int size)
 
 template <typename NType>
 NArray<NType>::~NArray() {
+	if (m_data != nullptr) {
+		delete[] m_data;
+	}
 }
 
 template <typename NType>
@@ -156,6 +159,7 @@ void NArray<NType>::set(NType element, int pos) {
 
 template <typename NType>
 NType NArray<NType>::get(int pos) {
+	// TODO - кинуть исключение, если нет такого элемента
 	return m_data[pos];
 }
 
@@ -183,7 +187,7 @@ int NArray<NType>::getBlock() {
 
 template <typename NType>
 NType* NArray<NType>::getData() {
-	return this->m_data;
+	return m_data;
 }
 
 // Метод resize не может уменьшить размер массива удалив данные.
