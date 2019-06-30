@@ -1,4 +1,4 @@
-#ifndef NMATRIX_H
+﻿#ifndef NMATRIX_H
 #define NMATRIX_H
 
 template <typename NType>
@@ -21,16 +21,17 @@ class NMatrix {
 	void delRow(int pos_row);
 	void addColumn(int pos_column, const NType& value);
 	void delColumn(int pos_column);
-	void set(const NType& value, int pos_row, int pos_column);
-	NType get(int pos_row, int pos_column);
 
-	int getSizeRow() const;
-	int getSizeColumn() const;
-	int getLenRow() const;
-	int getLenColumn() const;
-	NType* getData() const;
+	void set(const NType& value, int pos_row, int pos_column);  ///< Установка значения одному элементу (OK)
+	NType get(int pos_row, int pos_column);                     ///< Получение значения одного элемента (OK)
 
-	void resize(int size_row, int size_column);
+	int getSizeRow() const;     ///< Получение выделенного размера данных для строк (OK)
+	int getSizeColumn() const;  ///< Получение выделенного размера данных для столбцов (OK)
+	int getLenRow() const;      ///< Получение количества строк (OK)
+	int getLenColumn() const;   ///< Получение количества столбцов (OK)
+	NType* getData() const;     ///< Получение указателя на данные (OK
+
+	void resize(int size_row, int size_column);  ///< Изменение размера доступной памяти для матрицы (OK)
 };
 
 template <typename NType>
@@ -85,6 +86,13 @@ void NMatrix<NType>::init(int len_row, int len_column, const NType& value) {
 			m_data[i * m_size_column + j] = value;
 		}
 	}
+
+	for (int i = len_row; i < m_size_row; ++i) {
+		for (int j = len_column; j < m_size_column; ++j) {
+			m_data[i * m_size_column + j] = 0;
+		}
+	}
+
 	m_len_row = len_row;
 	m_len_column = len_column;
 }
@@ -163,7 +171,7 @@ void NMatrix<NType>::delColumn(int pos_column) {
 
 template <typename NType>
 void NMatrix<NType>::set(const NType& value, int pos_row, int pos_column) {
-	if (pos_row < m_len_row && pos_column < m_len_column) {
+	if (pos_row >= 0 && pos_row < m_len_row && pos_column >= 0 && pos_column < m_len_column) {
 		m_data[pos_row * m_size_column + pos_column] = value;
 	}
 }
