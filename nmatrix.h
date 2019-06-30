@@ -69,9 +69,18 @@ NMatrix<NType>::~NMatrix() {
 
 template <typename NType>
 void NMatrix<NType>::init(int len_row, int len_column, const NType& value) {
-	if (len_row > m_size_row || len_column > m_size_column) {
-		resize(len_row, len_column);
+	if (len_row > m_size_row) {
+		if (len_column > m_size_column) {
+			resize(len_row, len_column);
+		} else {
+			resize(len_row, m_size_column);
+		}
+	} else {
+		if (len_column > m_size_column) {
+			resize(m_size_row, len_column);
+		}
 	}
+
 	for (int i = 0; i < m_len_row; ++i) {
 		for (int j = 0; j < m_len_column; ++j) {
 			m_data[i * m_size_column + j] = value;
