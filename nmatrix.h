@@ -42,11 +42,11 @@ class NMatrix {
 	void resize(int size_row, int size_column);  ///< Изменение размера доступной памяти для матрицы (OK)
 
    public:
-	NMatrix<NType>& sum(const NMatrix<NType>& B);                           ///< Сложение матриц
 	NMatrix<NType>& valsum(const NType& value);                             ///< Сложение матрицы с числом
+	NMatrix<NType>& valmul(const NType& value);                             ///< Умножение матрицы на число
+	NMatrix<NType>& sum(const NMatrix<NType>& B);                           ///< Сложение матриц
 	NMatrix<NType>& mul(const NMatrix<NType>& A, const NMatrix<NType>& B);  ///< Умножение матриц
 	NMatrix<NType>& matmul(const NMatrix<NType>& B);                        ///< Математическое умножение матриц
-	NMatrix<NType>& valmul(const NType& value);                             ///< Умножение матрицы на число
 };
 
 template <typename NType>
@@ -251,21 +251,31 @@ void NMatrix<NType>::resize(int size_row, int size_column) {
 }
 
 template <typename NType>
-NMatrix<NType>& NMatrix<NType>::sum(const NMatrix<NType>& B) {
-	NType* pB = B.getData();
+NMatrix<NType>& NMatrix<NType>::valsum(const NType& value) {
 	for (int i = 0; i < m_len_row; ++i) {
 		for (int j = 0; j < m_len_column; ++j) {
-			m_data[i * m_size_column + j] = m_data[i * m_size_column + j] + pB[i * m_size_column + j];
+			m_data[i * m_size_column + j] = m_data[i * m_size_column + j] + value;
 		}
 	}
 	return *this;
 }
 
 template <typename NType>
-NMatrix<NType>& NMatrix<NType>::valsum(const NType& value) {
+NMatrix<NType>& NMatrix<NType>::valmul(const NType& value) {
 	for (int i = 0; i < m_len_row; ++i) {
 		for (int j = 0; j < m_len_column; ++j) {
-			m_data[i * m_size_column + j] = m_data[i * m_size_column + j] + value;
+			m_data[i * m_size_column + j] = m_data[i * m_size_column + j] * value;
+		}
+	}
+	return *this;
+}
+
+template <typename NType>
+NMatrix<NType>& NMatrix<NType>::sum(const NMatrix<NType>& B) {
+	NType* pB = B.getData();
+	for (int i = 0; i < m_len_row; ++i) {
+		for (int j = 0; j < m_len_column; ++j) {
+			m_data[i * m_size_column + j] = m_data[i * m_size_column + j] + pB[i * m_size_column + j];
 		}
 	}
 	return *this;
@@ -302,19 +312,10 @@ NMatrix<NType>& NMatrix<NType>::mul(const NMatrix<NType>& A, const NMatrix<NType
 template <typename NType>
 NMatrix<NType>& NMatrix<NType>::matmul(const NMatrix<NType>& B) {
 	NType* pB = B.getData();
+	int size_column_B = B.getSizeColumn();
 	for (int i = 0; i < m_len_row; ++i) {
 		for (int j = 0; j < m_len_column; ++j) {
-			m_data[i * m_size_column + j] = m_data[i * m_size_column + j] * pB[i * m_size_column + j];
-		}
-	}
-	return *this;
-}
-
-template <typename NType>
-NMatrix<NType>& NMatrix<NType>::valmul(const NType& value) {
-	for (int i = 0; i < m_len_row; ++i) {
-		for (int j = 0; j < m_len_column; ++j) {
-			m_data[i * m_size_column + j] = m_data[i * m_size_column + j] * value;
+			m_data[i * m_size_column + j] = m_data[i * m_size_column + j] * pB[i * size_column_B + j];
 		}
 	}
 	return *this;
