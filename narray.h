@@ -43,6 +43,12 @@ class NArray {
 
 	void resize(int size);  ///< Изменение размера доступной памяти (OK)
 
+   public:
+	NArray<NType>& sum(const NArray<NType>& B);  ///< Сложение векторов
+	NArray<NType>& mul(const NArray<NType>& B);  ///< Умножение векторов
+	NArray<NType>& valsum(const NType& value);   ///< Сложение вектора с числом
+	NArray<NType>& valmul(const NType& value);   ///< Умножение вектора на число
+
 	NArray<NType>& matrix_mul(const NArray<NType>& A, const NMatrix<NType>& B);  ///< Умножение вектора на матрицу
 	NArray<NType>& matrix_mul(const NMatrix<NType>& A, const NArray<NType>& B);  ///< Умножение матрицы на вектор
 };
@@ -217,6 +223,42 @@ void NArray<NType>::resize(int size) {
 		}
 		delete[] p;
 	}
+}
+
+template <typename NType>
+NArray<NType>& NArray<NType>::sum(const NArray<NType>& B) {
+	// Длина векторов одинакова
+	NType* pB = B.getData();
+	for (int i = 0; i < m_lenght; ++i) {
+		m_data[i] += pB[i];
+	}
+	return *this;
+}
+
+template <typename NType>
+NArray<NType>& NArray<NType>::mul(const NArray<NType>& B) {
+	// Длина векторов одинакова
+	NType* pB = B.getData();
+	for (int i = 0; i < m_lenght; ++i) {
+		m_data[i] *= pB[i];
+	}
+	return *this;
+}
+
+template <typename NType>
+NArray<NType>& NArray<NType>::valsum(const NType& value) {
+	for (int i = 0; i < m_lenght; ++i) {
+		m_data[i] += value;
+	}
+	return *this;
+}
+
+template <typename NType>
+NArray<NType>& NArray<NType>::valmul(const NType& value) {
+	for (int i = 0; i < m_lenght; ++i) {
+		m_data[i] *= value;
+	}
+	return *this;
 }
 
 template <typename NType>
