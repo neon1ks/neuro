@@ -1,5 +1,12 @@
+#pragma once
+
 #ifndef NMATRIX_H
 #define NMATRIX_H
+
+#include "narray.h"
+
+template <typename NType>
+class NArray;
 
 template <typename NType>
 class NMatrix {
@@ -33,6 +40,13 @@ class NMatrix {
 	NType* getData() const;     ///< Получение указателя на данные (OK
 
 	void resize(int size_row, int size_column);  ///< Изменение размера доступной памяти для матрицы (OK)
+
+   public:
+	NMatrix<NType>& sum(const NMatrix<NType>& B);                           ///< Сложение матриц
+	NMatrix<NType>& valsum(const NType& value);                             ///< Сложение матрицы с числом
+	NMatrix<NType>& mul(const NMatrix<NType>& A, const NMatrix<NType>& B);  ///< Умножение матриц
+	NMatrix<NType>& matmul(const NMatrix<NType>& B);                        ///< Математическое умножение матриц
+	NMatrix<NType>& valmul(const NType& value);                             ///< Умножение матрицы на число
 };
 
 template <typename NType>
@@ -234,6 +248,76 @@ void NMatrix<NType>::resize(int size_row, int size_column) {
 		m_size_column = size_column;
 		delete[] p;
 	}
+}
+
+template <typename NType>
+NMatrix<NType>& NMatrix<NType>::sum(const NMatrix<NType>& B) {
+	NType* pB = B.getData();
+	for (int i = 0; i < m_len_row; ++i) {
+		for (int j = 0; j < m_len_column; ++j) {
+			m_data[i * m_size_column + j] = m_data[i * m_size_column + j] + pB[i * m_size_column + j];
+		}
+	}
+	return *this;
+}
+
+template <typename NType>
+NMatrix<NType>& NMatrix<NType>::valsum(const NType& value) {
+	for (int i = 0; i < m_len_row; ++i) {
+		for (int j = 0; j < m_len_column; ++j) {
+			m_data[i * m_size_column + j] = m_data[i * m_size_column + j] + value;
+		}
+	}
+	return *this;
+}
+
+// 3 x 4 matrix * 4 x 5 matrix = 3 x 5 matrix
+//C_ij = сумма по к(a_ik * b_kj)
+// i - номер строки первой матрицы
+// j - номер столбка второй матрицы
+template <typename NType>
+NMatrix<NType>& NMatrix<NType>::mul(const NMatrix<NType>& A, const NMatrix<NType>& B) {
+	NType value = 0;
+	NType* pA = A.getData();
+	NType* pB = B.getData();
+
+	int len_column_A = A.getLenColumn();
+	int size_column_A = A.getSizeColumn();
+	int size_column_B = B.getSizeColumn();
+
+	init(A.getLenRow(), B.getLenColumn(), value);
+	for (int i = 0; i < m_len_row; ++i) {
+		for (int j = 0; j < m_len_column; ++j) {
+			value = 0;
+			for (int k = 0; k < len_column_A; ++k) {
+				value += pA[i * size_column_A + k] * pB[k * size_column_B + j];
+			}
+			m_data[i * m_size_column + j] = value;
+		}
+	}
+
+	return *this;
+}
+
+template <typename NType>
+NMatrix<NType>& NMatrix<NType>::matmul(const NMatrix<NType>& B) {
+	NType* pB = B.getData();
+	for (int i = 0; i < m_len_row; ++i) {
+		for (int j = 0; j < m_len_column; ++j) {
+			m_data[i * m_size_column + j] = m_data[i * m_size_column + j] * pB[i * m_size_column + j];
+		}
+	}
+	return *this;
+}
+
+template <typename NType>
+NMatrix<NType>& NMatrix<NType>::valmul(const NType& value) {
+	for (int i = 0; i < m_len_row; ++i) {
+		for (int j = 0; j < m_len_column; ++j) {
+			m_data[i * m_size_column + j] = m_data[i * m_size_column + j] * value;
+		}
+	}
+	return *this;
 }
 
 #endif  // NMATRIX_H
