@@ -1,5 +1,12 @@
+#pragma once
+
 #ifndef NARRAY_H
 #define NARRAY_H
+
+#include "nmatrix.h"
+
+template <typename NType>
+class NMatrix;
 
 template <typename NType>
 class NArray {
@@ -35,6 +42,9 @@ class NArray {
 	NType* getData();  ///< Получение указателя на данные (OK)
 
 	void resize(int size);  ///< Изменение размера доступной памяти (OK)
+
+	NArray<NType>& matrix_mul(const NArray<NType>& A, const NMatrix<NType>& B);  ///< Умножение вектора на матрицу
+	NArray<NType>& matrix_mul(const NMatrix<NType>& A, const NArray<NType>& B);  ///< Умножение матрицы на вектор
 };
 
 template <typename NType>
@@ -207,6 +217,48 @@ void NArray<NType>::resize(int size) {
 		}
 		delete[] p;
 	}
+}
+
+template <typename NType>
+NArray<NType>& NArray<NType>::matrix_mul(const NArray<NType>& array, const NMatrix<NType>& matrix) {
+	NType value = 0;
+	NType* p_array = array.getData();
+	NType* p_matrix = matrix.getData();
+
+	int len_row_matrix = matrix.getLenRow();
+	int len_column_matrix = matrix.getLenColumn();
+	int size_column_matrix = matrix.getSizeColumn();
+
+	init(len_column_matrix, value);
+
+	// Размер вектора совпадает с количеством строк матрицы!
+	for (int i = 0; i < len_row_matrix; ++i) {
+		for (int j = 0; j < len_column_matrix; ++j) {
+			m_data[j] += p_array[i] * p_matrix[i * size_column_matrix + j];
+		}
+	}
+	return *this;
+}
+
+template <typename NType>
+NArray<NType>& NArray<NType>::matrix_mul(const NMatrix<NType>& matrix, const NArray<NType>& array) {
+	NType value = 0;
+	NType* p_matrix = matrix.getData();
+	NType* p_array = array.getData();
+
+	int len_row_matrix = matrix.getLenRow();
+	int len_column_matrix = matrix.getLenColumn();
+	int size_column_matrix = matrix.getSizeColumn();
+
+	init(len_row_matrix, value);
+
+	// Количество столбцов матрицы совпадает с размером вектора!
+	for (int i = 0; i < len_row_matrix; ++i) {
+		for (int j = 0; j < len_column_matrix; ++j) {
+			m_data[i] += p_matrix[i * size_column_matrix + j] * p_array[j];
+		}
+	}
+	return *this;
 }
 
 #endif  // NARRAY_H
