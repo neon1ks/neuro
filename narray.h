@@ -36,10 +36,10 @@ class NArray {
 
 	void setBlock(int block);  ///< Изменение шага изменения размера данных (OK)
 
-	int getSize();     ///< Получение размера данных (OK)
-	int getLenght();   ///< Получение длины данных (OK)
-	int getBlock();    ///< Получение шага изменения размера данных (OK)
-	NType* getData();  ///< Получение указателя на данные (OK)
+	int getSize() const;     ///< Получение размера данных (OK)
+	int getLenght() const;   ///< Получение длины данных (OK)
+	int getBlock() const;    ///< Получение шага изменения размера данных (OK)
+	NType* getData() const;  ///< Получение указателя на данные (OK)
 
 	void resize(int size);  ///< Изменение размера доступной памяти (OK)
 
@@ -51,6 +51,17 @@ class NArray {
 
 	NArray<NType>& matrix_mul(const NArray<NType>& A, const NMatrix<NType>& B);  ///< Умножение вектора на матрицу
 	NArray<NType>& matrix_mul(const NMatrix<NType>& A, const NArray<NType>& B);  ///< Умножение матрицы на вектор
+
+	NArray<NType> operator+(const NType& value) const;  // (OK)
+	NArray<NType> operator-(const NType& value) const;  // (OK)
+	NArray<NType> operator*(const NType& value) const;  // (OK)
+	NArray<NType> operator/(const NType& value) const;  // (OK)
+
+	NArray<NType> operator+(const NArray<NType>& B) const;  // (OK)
+	NArray<NType> operator-(const NArray<NType>& B) const;  // (OK)
+	NArray<NType> operator*(const NArray<NType>& B) const;  // (OK)
+
+	NArray<NType> operator*(const NMatrix<NType>& B) const;  // (OK)
 };
 
 template <typename NType>
@@ -87,10 +98,10 @@ NArray<NType>& NArray<NType>::operator=(const NArray<NType>& obj) {
 			m_data = nullptr;
 
 			m_size = obj.getSize();
-			m_lenght = obj.getLenght();
-			m_block = obj.getBlock();
 			m_data = new int[m_size];
 		}
+		m_lenght = obj.getLenght();
+		m_block = obj.getBlock();
 		auto p = obj.getData();
 		for (int i = 0; i < m_lenght; ++i) {
 			m_data[i] = p[i];
@@ -187,22 +198,22 @@ void NArray<NType>::setBlock(int block) {
 }
 
 template <typename NType>
-int NArray<NType>::getSize() {
+int NArray<NType>::getSize() const {
 	return m_size;
 }
 
 template <typename NType>
-int NArray<NType>::getLenght() {
+int NArray<NType>::getLenght() const {
 	return m_lenght;
 }
 
 template <typename NType>
-int NArray<NType>::getBlock() {
+int NArray<NType>::getBlock() const {
 	return m_block;
 }
 
 template <typename NType>
-NType* NArray<NType>::getData() {
+NType* NArray<NType>::getData() const {
 	return m_data;
 }
 
@@ -301,6 +312,115 @@ NArray<NType>& NArray<NType>::matrix_mul(const NMatrix<NType>& matrix, const NAr
 		}
 	}
 	return *this;
+}
+
+template <typename NType>
+NArray<NType> NArray<NType>::operator+(const NType& value) const {
+	NArray<NType> result;
+	NType temp = 0;
+	result.init(m_lenght, temp);
+
+	for (int i = 0; i < m_lenght; ++i) {
+		result.set(m_data[i] + value, i);
+	}
+	return result;
+}
+
+template <typename NType>
+NArray<NType> NArray<NType>::operator-(const NType& value) const {
+	NArray<NType> result;
+	NType temp = 0;
+	result.init(m_lenght, temp);
+
+	for (int i = 0; i < m_lenght; ++i) {
+		result.set(m_data[i] - value, i);
+	}
+	return result;
+}
+
+template <typename NType>
+NArray<NType> NArray<NType>::operator*(const NType& value) const {
+	NArray<NType> result;
+	NType temp = 0;
+	result.init(m_lenght, temp);
+
+	for (int i = 0; i < m_lenght; ++i) {
+		result.set(m_data[i] * value, i);
+	}
+	return result;
+}
+
+template <typename NType>
+NArray<NType> NArray<NType>::operator/(const NType& value) const {
+	NArray<NType> result;
+	NType temp = 0;
+	result.init(m_lenght, temp);
+
+	for (int i = 0; i < m_lenght; ++i) {
+		result.set(m_data[i] / value, i);
+	}
+	return result;
+}
+
+template <typename NType>
+NArray<NType> NArray<NType>::operator+(const NArray<NType>& B) const {
+	NArray<NType> result;
+	NType temp = 0;
+	result.init(m_lenght, temp);
+	NType* pB = B.getData();
+	for (int i = 0; i < m_lenght; ++i) {
+		result.set(m_data[i] + pB[i], i);
+	}
+	return result;
+}
+
+template <typename NType>
+NArray<NType> NArray<NType>::operator-(const NArray<NType>& B) const {
+	NArray<NType> result;
+	NType temp = 0;
+	result.init(m_lenght, temp);
+	NType* pB = B.getData();
+	for (int i = 0; i < m_lenght; ++i) {
+		result.set(m_data[i] - pB[i], i);
+	}
+	return result;
+}
+
+template <typename NType>
+NArray<NType> NArray<NType>::operator*(const NArray<NType>& B) const {
+	NArray<NType> result;
+	NType temp = 0;
+	result.init(m_lenght, temp);
+	NType* pB = B.getData();
+	for (int i = 0; i < m_lenght; ++i) {
+		result.set(m_data[i] * pB[i], i);
+	}
+	return result;
+}
+
+// 1 x 4 matrix * 4 x 5 matrix = 1 x 5 matrix
+template <typename NType>
+NArray<NType> NArray<NType>::operator*(const NMatrix<NType>& matrix) const {
+	NType value = 0;
+	NType* p_matrix = matrix.getData();
+
+	int len_row_matrix = matrix.getLenRow();
+	int len_column_matrix = matrix.getLenColumn();
+	int size_column_matrix = matrix.getSizeColumn();
+
+	NArray<NType> result;
+	result.init(len_column_matrix, value);
+
+	// Размер входного вектора совпадает с количеством строк матрицы!
+	for (int j = 0; j < len_column_matrix; ++j) {
+		value = 0;
+		for (int i = 0; i < len_row_matrix; ++i) {
+			value += m_data[i] * p_matrix[i * size_column_matrix + j];
+		}
+		result.set(value, j);
+	}
+
+	return result;
 }
 
 #endif  // NARRAY_H
