@@ -98,7 +98,7 @@ NArray<NType>& NArray<NType>::operator=(const NArray<NType>& obj) {
 			m_data = nullptr;
 
 			m_size = obj.getSize();
-			m_data = new int[m_size];
+			m_data = new NType[m_size];
 		}
 		m_lenght = obj.getLenght();
 		m_block = obj.getBlock();
