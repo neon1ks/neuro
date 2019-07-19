@@ -13,6 +13,7 @@ class NMatrix {
    public:
 	NMatrix();
 	NMatrix(NMatrix<NType>& obj);
+	NMatrix<NType>& operator=(const NMatrix<NType>& obj);
 	~NMatrix();
 
    protected:
@@ -49,16 +50,16 @@ class NMatrix {
 	NMatrix<NType>& mul(const NMatrix<NType>& A, const NMatrix<NType>& B);  ///< Умножение матриц
 	NMatrix<NType>& matmul(const NMatrix<NType>& B);                        ///< Математическое умножение матриц
 
-	NMatrix<NType> operator+(const NType& value) const;
-	NMatrix<NType> operator-(const NType& value) const;
-	NMatrix<NType> operator*(const NType& value) const;
-	NMatrix<NType> operator/(const NType& value) const;
+	NMatrix<NType> operator+(const NType& value) const;  // (OK)
+	NMatrix<NType> operator-(const NType& value) const;  // (OK)
+	NMatrix<NType> operator*(const NType& value) const;  // (OK)
+	NMatrix<NType> operator/(const NType& value) const;  // (OK)
 
-	NMatrix<NType> operator+(const NMatrix<NType>& B) const;
-	NMatrix<NType> operator-(const NMatrix<NType>& B) const;
-	NMatrix<NType> operator*(const NMatrix<NType>& B) const;
+	NMatrix<NType> operator+(const NMatrix<NType>& B) const;  // (OK)
+	NMatrix<NType> operator-(const NMatrix<NType>& B) const;  // (OK)
+	NMatrix<NType> operator*(const NMatrix<NType>& B) const;  // (OK)
 
-	NArray<NType> operator*(const NArray<NType>& B) const;
+	NArray<NType> operator*(const NArray<NType>& B) const;  // (OK)
 };
 
 template <typename NType>
@@ -85,6 +86,34 @@ NMatrix<NType>::NMatrix(NMatrix<NType>& obj) {
 			m_data[i * m_size_column + j] = p[i * m_size_column + j];
 		}
 	}
+}
+
+// Assignment operator
+template <typename NType>
+NMatrix<NType>& NMatrix<NType>::operator=(const NMatrix<NType>& obj) {
+	if (this != &obj) {
+		if (obj.getSizeRow() != m_size_row || obj.getSizeColumn() != m_size_column) {
+			if (m_data != nullptr) {
+				delete[] m_data;
+			}
+			m_size_row = 0;
+			m_size_column = 0;
+			m_data = nullptr;
+
+			m_size_row = obj.getSizeRow();
+			m_size_column = obj.getSizeColumn();
+			m_data = new NType[m_size_row * m_size_column];
+		}
+		m_len_row = obj.getLenRow();
+		m_len_column = obj.getLenColumn();
+		auto p = obj.getData();
+		for (int i = 0; i < m_len_row; ++i) {
+			for (int j = 0; j < m_len_column; ++j) {
+				m_data[i * m_size_column + j] = p[i * m_size_column + j];
+			}
+		}
+	}
+	return *this;
 }
 
 template <typename NType>
@@ -426,7 +455,7 @@ NMatrix<NType> NMatrix<NType>::operator*(const NMatrix<NType>& B) const {
 	NType* pB = B.getData();
 	int size_column_B = B.getSizeColumn();
 	int len_column_B = B.getLenColumn();
-	init(m_len_row, len_column_B, temp);
+	result.init(m_len_row, len_column_B, temp);
 
 	// Количество столбцов первой матрицы равно количество строк второй матрицы!!!
 	for (int i = 0; i < m_len_row; ++i) {
@@ -446,14 +475,17 @@ template <typename NType>
 NArray<NType> NMatrix<NType>::operator*(const NArray<NType>& array) const {
 	NArray<NType> result;
 	NType value = 0;
+	NType temp = 0;
 	NType* p_array = array.getData();
 	result.init(m_len_row, value);
 
 	// Количество столбцов матрицы совпадает с размером вектора!
 	for (int i = 0; i < m_len_row; ++i) {
+		temp = 0;
 		for (int j = 0; j < m_len_column; ++j) {
-			m_data[i] += m_data[i * m_size_column + j] * p_array[j];
+			temp += m_data[i * m_size_column + j] * p_array[j];
 		}
+		result.set(temp, i);
 	}
 	return result;
 }
