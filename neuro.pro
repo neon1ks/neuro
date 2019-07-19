@@ -31,7 +31,9 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     narray.h \
-    nmatrix.h
+    nmatrix.h \
+    inlayer.h \
+    nlayertanh.h
 
 FORMS += \
         mainwindow.ui
