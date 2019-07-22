@@ -33,7 +33,8 @@ HEADERS += \
     narray.h \
     nmatrix.h \
     inlayer.h \
-    nlayertanh.h
+    nlayertanh.h \
+    nlayersoftsign.h
 
 FORMS += \
         mainwindow.ui
