@@ -36,7 +36,8 @@ HEADERS += \
     nlayertanh.h \
     nlayersoftsign.h \
     nexample.h \
-    nlayeracrtg.h
+    nlayeracrtg.h \
+    ineuronet.h
 
 FORMS += \
         mainwindow.ui
