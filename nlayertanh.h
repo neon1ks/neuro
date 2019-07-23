@@ -11,8 +11,8 @@ class NLayerTanh : public INLayer<NType> {
 	virtual ~NLayerTanh();
 
    public:
-	virtual NType activation(NType& x);
-	virtual NType derivative(NType& y);
+	virtual NType activation(NType& x) override;
+	virtual NType derivative(NType& y) override;
 };
 
 template <typename NType>

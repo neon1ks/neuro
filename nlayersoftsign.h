@@ -11,8 +11,8 @@ class NLayerSoftsign : public INLayer<NType> {
 	virtual ~NLayerSoftsign();
 
    public:
-	virtual NType activation(NType& x);
-	virtual NType derivative(NType& y);
+	virtual NType activation(NType& x) override;
+	virtual NType derivative(NType& y) override;
 };
 
 template <typename NType>
