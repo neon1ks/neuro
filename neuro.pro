@@ -34,7 +34,8 @@ HEADERS += \
     nmatrix.h \
     inlayer.h \
     nlayertanh.h \
-    nlayersoftsign.h
+    nlayersoftsign.h \
+    nexample.h
 
 FORMS += \
         mainwindow.ui
