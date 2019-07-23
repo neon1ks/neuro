@@ -20,12 +20,12 @@ class INLayer {
 	void init(int len_row, int len_column, const NType& value);
 	virtual NType activation(NType& x) = 0;
 	virtual NType derivative(NType& y) = 0;
-	virtual void func(const NArray<NType>& array_x);
+	virtual void run(const NArray<NType>& array_x);
 };
 
 template <typename NType>
-INLayer<NType>::INLayer() {
-	m_koef = 1;
+INLayer<NType>::INLayer()
+    : m_koef(1) {
 }
 
 template <typename NType>
@@ -40,7 +40,7 @@ void INLayer<NType>::init(int len_row, int len_column, const NType& value) {
 }
 
 template <typename NType>
-void INLayer<NType>::func(const NArray<NType>& array_x) {
+void INLayer<NType>::run(const NArray<NType>& array_x) {
 	m_output = m_weight * array_x;
 	m_output.sum(m_bias);
 	NType* p_out = m_output.getData();
