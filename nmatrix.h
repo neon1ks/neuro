@@ -24,6 +24,7 @@ class NMatrix {
 	NType* m_data;  ///< Указатель на хранящиеся данные
 
    public:
+	void init(const NType& value);
 	void init(int len_row, int len_column, const NType& value);  ///< Инициализация матрицы значением (OK)
 
 	void addRow(int pos_row, const NType& value);        ///< Добавление строки в матрицу, существующие сдвигаются (OK)
@@ -120,6 +121,15 @@ template <typename NType>
 NMatrix<NType>::~NMatrix() {
 	if (m_data != nullptr) {
 		delete[] m_data;
+	}
+}
+
+template <typename NType>
+void NMatrix<NType>::init(const NType& value) {
+	for (int i = 0; i < m_len_row; ++i) {
+		for (int j = 0; j < m_len_column; ++j) {
+			m_data[i * m_size_column + j] = value;
+		}
 	}
 }
 

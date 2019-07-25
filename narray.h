@@ -24,6 +24,7 @@ class NArray {
 	NType* m_data;  ///< Указатель на хранящиеся данные
 
    public:
+	void init(const NType& value);
 	void init(int lenght, const NType& value);  ///< Инициализация массива значением (OK)
 	void add(NType element, int pos);           ///< Добавление элемента в массив, существующие сдвигаются
 	NType del(int pos);
@@ -122,6 +123,13 @@ template <typename NType>
 NArray<NType>::~NArray() {
 	if (m_data != nullptr) {
 		delete[] m_data;
+	}
+}
+
+template <typename NType>
+void NArray<NType>::init(const NType& value) {
+	for (int i = 0; i < m_lenght; ++i) {
+		m_data[i] = value;
 	}
 }
 
