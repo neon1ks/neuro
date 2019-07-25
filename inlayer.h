@@ -17,7 +17,8 @@ class INLayer {
 	NArray<NType> m_output;
 
    public:
-	void init(int len_row, int len_column, const NType& value);
+	virtual void init(const NType& value);
+	virtual void init(int len_row, int len_column, const NType& value);
 	virtual NType activation(NType& x) = 0;
 	virtual NType derivative(NType& y) = 0;
 	virtual void run(const NArray<NType>& array_x);
@@ -30,6 +31,13 @@ INLayer<NType>::INLayer()
 
 template <typename NType>
 INLayer<NType>::~INLayer() {
+}
+
+template <typename NType>
+void INLayer<NType>::init(const NType& value) {
+	m_weight.init(value);
+	m_bias.init(value);
+	m_output.init(value);
 }
 
 template <typename NType>
