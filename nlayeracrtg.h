@@ -16,8 +16,8 @@ class NLayerArctg : public INLayer<NType> {
 };
 
 template <typename NType>
-NLayerArctg<NType>::NLayerArctg() {
-	this->m_koef = 2;
+NLayerArctg<NType>::NLayerArctg()
+    : INLayer<NType>(2, NLayerType::Arctg) {
 }
 
 template <typename NType>

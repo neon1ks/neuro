@@ -16,8 +16,8 @@ class NLayerSoftsign : public INLayer<NType> {
 };
 
 template <typename NType>
-NLayerSoftsign<NType>::NLayerSoftsign() {
-	this->m_koef = 1;
+NLayerSoftsign<NType>::NLayerSoftsign()
+    : INLayer<NType>(1, NLayerType::Softsign) {
 }
 
 template <typename NType>

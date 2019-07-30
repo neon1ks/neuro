@@ -4,19 +4,32 @@
 #include "narray.h"
 #include "nmatrix.h"
 
+enum NLayerType { None,
+	              Tanh,
+	              Softsign,
+	              Arctg };
+
 template <typename NType>
 class INLayer {
    public:
 	INLayer();
+	INLayer(NType koef, NLayerType type);
 	virtual ~INLayer();
 
    public:
 	NMatrix<NType> m_weight;  // матрица весов
 	NArray<NType> m_bias;     // Массив смещений
-	NType m_koef;
 	NArray<NType> m_output;
 
+   protected:
+	NType m_koef;
+	NLayerType m_type;
+
    public:
+	void setKoef(NType koef);
+	NType getKoef() const;
+	NLayerType getType() const;
+
 	virtual void init(const NType& value);
 	virtual void init(int len_row, int len_column, const NType& value);
 	virtual NType activation(NType& x) = 0;
@@ -26,11 +39,33 @@ class INLayer {
 
 template <typename NType>
 INLayer<NType>::INLayer()
-    : m_koef(1) {
+    : m_koef(1)
+    , m_type(NLayerType::None) {
+}
+
+template <typename NType>
+INLayer<NType>::INLayer(NType koef, NLayerType type)
+    : m_koef(koef)
+    , m_type(type) {
 }
 
 template <typename NType>
 INLayer<NType>::~INLayer() {
+}
+
+template <typename NType>
+void INLayer<NType>::setKoef(NType koef) {
+	m_koef = koef;
+}
+
+template <typename NType>
+NType INLayer<NType>::getKoef() const {
+	return m_koef;
+}
+
+template <typename NType>
+NLayerType INLayer<NType>::getType() const {
+	return m_type;
 }
 
 template <typename NType>

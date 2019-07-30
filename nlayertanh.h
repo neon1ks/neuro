@@ -16,8 +16,8 @@ class NLayerTanh : public INLayer<NType> {
 };
 
 template <typename NType>
-NLayerTanh<NType>::NLayerTanh() {
-	this->m_koef = 2;
+NLayerTanh<NType>::NLayerTanh()
+    : INLayer<NType>(2, NLayerType::Tanh) {
 }
 
 template <typename NType>
