@@ -3,53 +3,103 @@
 
 #include <vector>
 #include "inlayer.h"
+#include "nlayeracrtg.h"
+#include "nlayersoftsign.h"
+#include "nlayertanh.h"
 
 template <typename NType>
 class INeuroNet {
    public:
 	INeuroNet();
-	INeuroNet(INeuroNet<NType>& obj);
+	INeuroNet(const INeuroNet<NType>& obj);
+	INeuroNet<NType>& operator=(const INeuroNet<NType>& obj);
 	explicit INeuroNet(int size);
-	//INeuroNet<NType>& operator=(const INeuroNet<NType>& obj);
+
 	~INeuroNet();
 
    public:
-	//NArray<INLayer<NType>> m_lay;
-	std::vector<INLayer<NType>> m_lay;
+	std::vector<INLayer<NType>*> m_lay;
 
    protected:
 	NType m_valueWeight;
+	NArray<NType>* m_output;
 
    public:
 	void setValueWeight(NType value);
 	NType getValueWeight() const;
+	NArray<NType>* getOutput() const;
+
+	INLayer<NType>* newLayer(NLayerType type);
 
 	virtual void run(const NArray<NType>& x);
-	virtual void initWeight();
-	void init(int n1, int n2, int n3);
-	void init(int n1, int n2, int n3, int n4);
-	void init(const NArray<int>& n);
+	virtual void init();
+	void init(const NArray<int>& n, NArray<NLayerType>& lay_type);
 };
 
 template <typename NType>
 INeuroNet<NType>::INeuroNet()
-    : m_valueWeight(0) {
+    : m_valueWeight(0)
+    , m_output(nullptr) {
 }
 
 template <typename NType>
-INeuroNet<NType>::INeuroNet(INeuroNet<NType>& obj)
-    : m_lay(obj.m_lay)
-    , m_valueWeight(obj.getValueWeight()) {
+INeuroNet<NType>::INeuroNet(const INeuroNet<NType>& obj)
+    : m_valueWeight(obj.getValueWeight()) {
+	INLayer<NType>* layer;
+	for (int i = 0; i < obj.m_lay.size(); ++i) {
+		if (obj.m_lay[i]->m_type == NLayerType::Tanh) {
+			layer = new NLayerTanh<NType>(*obj.m_lay[i]);
+		} else if (obj.m_lay[i]->m_type == NLayerType::Softsign) {
+			layer = new NLayerSoftsign<NType>(*obj.m_lay[i]);
+		} else if (obj.m_lay[i]->m_type == NLayerType::Arctg) {
+			layer = new NLayerArctg<NType>(*obj.m_lay[i]);
+		}
+		m_lay.push_back(*layer);
+	}
+	m_output = &(layer->m_output);
+}
+
+template <typename NType>
+INeuroNet<NType>& INeuroNet<NType>::operator=(const INeuroNet<NType>& obj) {
+	if (this == &obj)
+		return *this;
+	for (int i = 0; i < m_lay.size(); ++i) {
+		delete m_lay[i];
+	}
+	m_lay.erase();
+
+	m_valueWeight = obj.getValueWeight();
+	INLayer<NType>* layer;
+	for (int i = 0; i < obj.m_lay.size(); ++i) {
+		if (obj.m_lay[i]->m_type == NLayerType::Tanh) {
+			layer = new NLayerTanh<NType>(*obj.m_lay[i]);
+		} else if (obj.m_lay[i]->m_type == NLayerType::Softsign) {
+			layer = new NLayerSoftsign<NType>(*obj.m_lay[i]);
+		} else if (obj.m_lay[i]->m_type == NLayerType::Arctg) {
+			layer = new NLayerArctg<NType>(*obj.m_lay[i]);
+		}
+		m_lay.push_back(*layer);
+	}
+	m_output = &(layer->m_output);
+
+	return *this;
 }
 
 template <typename NType>
 INeuroNet<NType>::INeuroNet(int size)
     : m_valueWeight(0)
+    , m_output(nullptr)
     , m_lay(size) {
 }
 
 template <typename NType>
 INeuroNet<NType>::~INeuroNet() {
+	for (int i = 0; i < m_lay.size(); ++i) {
+		if (m_lay[i] != nullptr) {
+			delete m_lay[i];
+			m_lay[i] = nullptr;
+		}
+	}
 }
 
 template <typename NType>
@@ -63,26 +113,51 @@ NType INeuroNet<NType>::getValueWeight() const {
 }
 
 template <typename NType>
+NArray<NType>* INeuroNet<NType>::getOutput() const {
+	return m_output;
+}
+
+template <typename NType>
+INLayer<NType>* INeuroNet<NType>::newLayer(NLayerType lay_type) {
+	INLayer<NType>* layer = nullptr;
+	if (lay_type == NLayerType::Tanh) {
+		layer = new NLayerTanh<NType>();
+	} else if (lay_type == NLayerType::Softsign) {
+		layer = new NLayerSoftsign<NType>();
+	} else if (lay_type == NLayerType::Arctg) {
+		layer = new NLayerArctg<NType>();
+	}
+	return layer;
+}
+
+template <typename NType>
 void INeuroNet<NType>::run(const NArray<NType>& x) {
-	for (int i = 0; i < m_lay.size(); ++i) {
-		m_lay[i]->run(x);
+	m_lay[0]->run(x);
+	auto size = m_lay.size();
+	for (int i = 0; i < size; ++i) {
+		m_lay[i]->run(m_lay[i - 1]->m_output);
+	}
+	m_output = &(m_lay[size - 1]->m_output);
+}
+
+template <typename NType>
+void INeuroNet<NType>::init() {
+	auto size = m_lay.size();
+	for (int i = 0; i < size; ++i) {
+		m_lay[i]->init(m_valueWeight);
 	}
 }
 
 template <typename NType>
-void INeuroNet<NType>::initWeight() {
-}
-
-template <typename NType>
-void INeuroNet<NType>::init(int n1, int n2, int n3) {
-}
-
-template <typename NType>
-void INeuroNet<NType>::init(int n1, int n2, int n3, int n4) {
-}
-
-template <typename NType>
-void INeuroNet<NType>::init(const NArray<int>& n) {
+void INeuroNet<NType>::init(const NArray<int>& num, NArray<NLayerType>& lay_type) {
+	auto len_layer = num.getLenght() - 1;
+	m_lay.init(len_layer);
+	for (int i = 0; i < lay_type.getLenght(); ++i) {
+		INLayer<NType>* layer;
+		layer = newLayer(lay_type.get(i));
+		layer->init(num.get(i), num.get(i + 1), m_valueWeight);
+		m_lay.push_back(*layer);
+	}
 }
 
 #endif  // INEURONET_H
