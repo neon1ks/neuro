@@ -33,7 +33,7 @@ class NMatrix {
 	void delColumn(int pos_column);                      ///< Удаление сстолбца из матрицу, существующие сдвигаются (OK)
 
 	void set(const NType& value, int pos_row, int pos_column);  ///< Установка значения одному элементу (OK)
-	NType get(int pos_row, int pos_column);                     ///< Получение значения одного элемента (OK)
+	NType get(int pos_row, int pos_column) const;               ///< Получение значения одного элемента (OK)
 
 	int getSizeRow() const;     ///< Получение выделенного размера данных для строк (OK)
 	int getSizeColumn() const;  ///< Получение выделенного размера данных для столбцов (OK)
@@ -249,7 +249,7 @@ void NMatrix<NType>::set(const NType& value, int pos_row, int pos_column) {
 }
 
 template <typename NType>
-NType NMatrix<NType>::get(int pos_row, int pos_column) {
+NType NMatrix<NType>::get(int pos_row, int pos_column) const {
 	// TODO - кинуть исключение, если нет такого элемента
 	return m_data[pos_row * m_size_column + pos_column];
 }

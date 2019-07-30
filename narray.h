@@ -33,7 +33,7 @@ class NArray {
 	NType pop();
 
 	void set(NType element, int pos);  ///< Установка значения одному элементу (OK)
-	NType get(int pos);                ///< Получение значения одного элемента (OK)
+	NType get(int pos) const;          ///< Получение значения одного элемента (OK)
 
 	void setBlock(int block);  ///< Изменение шага изменения размера данных (OK)
 
@@ -193,7 +193,7 @@ void NArray<NType>::set(NType element, int pos) {
 }
 
 template <typename NType>
-NType NArray<NType>::get(int pos) {
+NType NArray<NType>::get(int pos) const {
 	// TODO - кинуть исключение, если нет такого элемента
 	return m_data[pos];
 }
