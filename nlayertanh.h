@@ -5,14 +5,17 @@
 #include "inlayer.h"
 
 template <typename NType>
-class NLayerTanh : public INLayer<NType> {
+class NLayerTanh final : public INLayer<NType> {
    public:
 	NLayerTanh();
 	virtual ~NLayerTanh();
 
    public:
-	virtual NType activation(NType& x) override;
-	virtual NType derivative(NType& y) override;
+	NType activation(NType& x) override;
+	NType derivative(NType& y) override;
+	void init(const NType& value) override;
+	void init(int len_row, int len_column, const NType& value) override;
+	// void run(const NArray<NType>& array_x) override;
 };
 
 template <typename NType>
@@ -33,6 +36,16 @@ NType NLayerTanh<NType>::activation(NType& x) {
 template <typename NType>
 NType NLayerTanh<NType>::derivative(NType& y) {
 	return (1 - y * y);
+}
+
+template <typename NType>
+void NLayerTanh<NType>::init(const NType& value) {
+	INLayer<NType>::init(value);
+}
+
+template <typename NType>
+void NLayerTanh<NType>::init(int len_row, int len_column, const NType& value) {
+	INLayer<NType>::init(len_row, len_column, value);
 }
 
 #endif  // NLAYERTANH_H

@@ -5,14 +5,17 @@
 #include "inlayer.h"
 
 template <typename NType>
-class NLayerSoftsign : public INLayer<NType> {
+class NLayerSoftsign final : public INLayer<NType> {
    public:
 	NLayerSoftsign();
 	virtual ~NLayerSoftsign();
 
    public:
-	virtual NType activation(NType& x) override;
-	virtual NType derivative(NType& y) override;
+	NType activation(NType& x) override;
+	NType derivative(NType& y) override;
+	void init(const NType& value) override;
+	void init(int len_row, int len_column, const NType& value) override;
+	// void run(const NArray<NType>& array_x) override;
 };
 
 template <typename NType>
@@ -32,6 +35,16 @@ NType NLayerSoftsign<NType>::activation(NType& x) {
 template <typename NType>
 NType NLayerSoftsign<NType>::derivative(NType& y) {
 	return this->m_koef / pow(1 + this->m_koef * abs(y), 2);
+}
+
+template <typename NType>
+void NLayerSoftsign<NType>::init(const NType& value) {
+	INLayer<NType>::init(value);
+}
+
+template <typename NType>
+void NLayerSoftsign<NType>::init(int len_row, int len_column, const NType& value) {
+	INLayer<NType>::init(len_row, len_column, value);
 }
 
 #endif  // NLAYERSOFTSIGN_H
