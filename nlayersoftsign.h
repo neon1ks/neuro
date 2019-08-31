@@ -5,14 +5,14 @@
 #include "inlayer.h"
 
 template <typename NType>
-class NLayerSoftsign : public INLayer<NType> {
+class NLayerSoftsign final : public INLayer<NType> {
    public:
 	NLayerSoftsign();
-	virtual ~NLayerSoftsign();
+	~NLayerSoftsign();
 
    public:
-	virtual NType activation(NType& x) override;
-	virtual NType derivative(NType& y) override;
+	NType activation(NType& x) override;
+	NType derivative(NType& y) override;
 };
 
 template <typename NType>

@@ -5,14 +5,14 @@
 #include "inlayer.h"
 
 template <typename NType>
-class NLayerArctg : public INLayer<NType> {
+class NLayerArctg final : public INLayer<NType> {
    public:
 	NLayerArctg();
-	virtual ~NLayerArctg();
+	~NLayerArctg();
 
    public:
-	virtual NType activation(NType& x) override;
-	virtual NType derivative(NType& y) override;
+	NType activation(NType& x) override;
+	NType derivative(NType& y) override;
 };
 
 template <typename NType>

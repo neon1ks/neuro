@@ -5,14 +5,14 @@
 #include "inlayer.h"
 
 template <typename NType>
-class NLayerTanh : public INLayer<NType> {
+class NLayerTanh final : public INLayer<NType> {
    public:
 	NLayerTanh();
-	virtual ~NLayerTanh();
+	~NLayerTanh();
 
    public:
-	virtual NType activation(NType& x) override;
-	virtual NType derivative(NType& y) override;
+	NType activation(NType& x) override;
+	NType derivative(NType& y) override;
 };
 
 template <typename NType>
