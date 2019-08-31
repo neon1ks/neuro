@@ -26,12 +26,12 @@ NLayerArctg<NType>::~NLayerArctg() {
 
 template <typename NType>
 NType NLayerArctg<NType>::activation(NType& x) {
-	return atan(this->m_koef * x);
+	return atan(INLayer<NType>::m_koef * x);
 }
 
 template <typename NType>
 NType NLayerArctg<NType>::derivative(NType& y) {
-	return this->m_koef / (pow(this->m_koef * y, 2) + 1);
+	return this->m_koef / (pow(INLayer<NType>::m_koef * y, 2) + 1);
 }
 
 #endif  // NLAYERACRTG_H
